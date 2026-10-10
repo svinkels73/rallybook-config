@@ -1,5 +1,8 @@
 {
   "active": true,
+  "endDate": "2026-12-31",
   "message": "",
-  "minVersion": 0
+  "minVersion": 32,
+  "latestVersion": 35,
+  "storeUrl": "https://..."
 }
