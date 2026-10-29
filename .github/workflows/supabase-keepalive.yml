@@ -1,0 +1,54 @@
+name: Supabase keep-alive
+
+# Empêche la mise en pause du projet Supabase (plan gratuit = pause après 7 jours
+# SANS activité) en touchant une API Supabase tous les 2 jours. Toute requête qui
+# atteint le projet suffit à relancer le décompte — on vise /auth/v1/health
+# (endpoint public, sans auth).
+#
+# Bonus : chaque run écrit un horodatage dans le repo. Ce commit garde le dépôt
+# "actif", ce qui évite que GitHub DÉSACTIVE le cron planifié (il le désactive
+# après ~60 jours sans activité de dépôt).
+#
+# Déclenchement manuel possible via l'onglet Actions (Run workflow).
+
+on:
+  schedule:
+    # ~toutes les 48 h, à 05:23 UTC (heure best-effort GitHub). Marge large sous
+    # le seuil de 7 jours même en cas de run retardé/sauté.
+    - cron: '23 5 */2 * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ping Supabase (/auth/v1/health)
+        run: |
+          set -o pipefail
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
+            https://alseofesdkrbxsvjkveo.supabase.co/auth/v1/health || echo "000")
+          echo "Supabase /auth/v1/health -> HTTP $code"
+          # On NE fait PAS échouer le job sur un code != 200 : même une requête
+          # non-200 a atteint le projet et relance le décompte d'inactivité.
+
+      - name: Horodatage (garde le dépôt actif → cron non désactivé)
+        run: |
+          mkdir -p keepalive
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > keepalive/last-ping.txt
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add keepalive/last-ping.txt
+          git commit -m "chore: supabase keep-alive ping [skip ci]" || {
+            echo "rien à committer"; exit 0;
+          }
+          git push
