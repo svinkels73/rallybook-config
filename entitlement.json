@@ -1,9 +1,20 @@
 {
   "active": true,
   "message": "",
-  "latestVersion": 36,
+  "endDate": "",
+
   "minVersion": 36,
+  "latestVersion": 36,
+
   "storeUrlAndroid": "https://play.google.com/store/apps/details?id=rallybook.betatest.v0",
+  "minVersionAndroid": 36,
+  "latestVersionAndroid": 36,
+
   "storeUrlWindows": "",
-  "endDate": ""
+  "minVersionWindows": 0,
+  "latestVersionWindows": 0,
+
+  "storeUrlMac": "",
+  "minVersionMac": 0,
+  "latestVersionMac": 0
 }
