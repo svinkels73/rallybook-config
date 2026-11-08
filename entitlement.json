@@ -3,12 +3,12 @@
   "message": "",
   "endDate": "",
 
-  "minVersion": 38,
-  "latestVersion": 38,
+  "minVersion": 39,
+  "latestVersion": 39,
 
   "storeUrlAndroid": "https://play.google.com/store/apps/details?id=rallybook.betatest.v0",
-  "minVersionAndroid": 38,
-  "latestVersionAndroid": 38,
+  "minVersionAndroid": 39,
+  "latestVersionAndroid": 39,
 
   "storeUrlWindows": "",
   "minVersionWindows": 0,
